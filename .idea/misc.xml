@@ -3,9 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/drawable/edt_background.xml" value="0.1835" />
+        <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/drawable/message_box_background.xml" value="0.1835" />
+        <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_chat.xml" value="0.264" />
+        <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_chatactivity2.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_login.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_main.xml" value="0.2604166666666667" />
         <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/activity_sign_up.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/receive.xml" value="0.2734375" />
+        <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/sent.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/dorus/AndroidStudioProjects/ChatApp/app/src/main/res/layout/user_layout.xml" value="0.25" />
       </map>
     </option>
