@@ -24,7 +24,7 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
             return ReceiveViewHolder(view)
         }else{
             // inflate sent
-            val view: View = LayoutInflater.from(context).inflate(R.layout.receive, parent, false)
+            val view: View = LayoutInflater.from(context).inflate(R.layout.sent, parent, false)
             return SentViewHolder(view)
         }
 

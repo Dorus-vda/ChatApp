@@ -1,8 +1,11 @@
 package com.example.chatapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: UserAdapter
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.adapter = adapter
+
+        preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
         mDbRef.child("user").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -69,6 +75,10 @@ class MainActivity : AppCompatActivity() {
         if(item.itemId ==  R.id.logout){
             // write the login for the logout
             mAuth.signOut()
+            val editor: SharedPreferences.Editor = preferences.edit()
+            editor.clear()
+            editor.apply()
+
             val intent = Intent(this@MainActivity,Login::class.java)
             finish()
             startActivity(intent)
