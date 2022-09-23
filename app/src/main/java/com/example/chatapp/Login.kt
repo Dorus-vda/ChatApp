@@ -63,12 +63,6 @@ class Login : AppCompatActivity() {
             editor.putBoolean("CHECKBOX", checked)
             editor.apply()
 
-            Toast.makeText(this, "Information Saved!", Toast.LENGTH_LONG).show()
-
-            val intent = Intent(this, MainActivity::class.java )
-            startActivity(intent)
-            finish()
-
             login(email,password);
         }
     }
