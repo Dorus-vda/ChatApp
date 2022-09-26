@@ -24,7 +24,7 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
             return ReceiveViewHolder(view)
         }else{
             // inflate sent
-            val view: View = LayoutInflater.from(context).inflate(R.layout.receive, parent, false)
+            val view: View = LayoutInflater.from(context).inflate(R.layout.sent, parent, false)
             return SentViewHolder(view)
         }
 
@@ -59,12 +59,12 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
         return messageList.size
     }
 
-    class SentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class SentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val sentMessage = itemView.findViewById<TextView>(R.id.txt_sent_message)
 
     }
 
-    class ReceiveViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class ReceiveViewHolder(itemView: View)  : RecyclerView.ViewHolder(itemView){
         val receiveMessage = itemView.findViewById<TextView>(R.id.txt_receive_message)
     }
 }
