@@ -55,14 +55,6 @@ class Login : AppCompatActivity() {
         btnLogin.setOnClickListener{
             val email = edtEmail.text.toString()
             val password = edtPassword.text.toString()
-            val checked: Boolean = rememberMe.isChecked
-
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString("EMAIL", email)
-            editor.putString("PASSWORD", password)
-            editor.putBoolean("CHECKBOX", checked)
-            editor.apply()
-
             login(email,password);
         }
     }
@@ -71,9 +63,20 @@ class Login : AppCompatActivity() {
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    val email = edtEmail.text.toString()
+                    val password = edtPassword.text.toString()
+                    val checked: Boolean = rememberMe.isChecked
+
+                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                    editor.putString("EMAIL", email)
+                    editor.putString("PASSWORD", password)
+                    editor.putBoolean("CHECKBOX", checked)
+                    editor.apply()
+
                     val intent = Intent(this@Login, MainActivity::class.java)
                     finish()
                     startActivity(intent)
+
                 } else {
                     Toast.makeText(this@Login, "User does not exist", Toast.LENGTH_SHORT).show()
                 }
