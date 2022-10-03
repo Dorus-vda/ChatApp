@@ -16,7 +16,6 @@ const val channelId = "notification_channel"
 const val channelName = "com.example.chatapp"
 
 class MyFirebaseMessagingService: FirebaseMessagingService() {
-
     //notification generator
     //attach the notification created with the custom layout
     //show the notification

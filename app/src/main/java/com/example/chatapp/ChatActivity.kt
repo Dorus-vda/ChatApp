@@ -1,6 +1,5 @@
 package com.example.chatapp
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
@@ -9,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.example.chatapp.MyFirebaseMessagingService
+
 
 class ChatActivity : AppCompatActivity() {
 
@@ -22,10 +23,11 @@ class ChatActivity : AppCompatActivity() {
     var receiverRoom: String? = null
     var senderRoom: String? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
-
         val name = intent.getStringExtra("name")
         val receiverUid = intent.getStringExtra("uid")
 
@@ -48,6 +50,7 @@ class ChatActivity : AppCompatActivity() {
 
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatRecyclerView.adapter = messageAdapter
+        
 
         mDbRef.child("chats").child(senderRoom!!).child("messages")
                 .addValueEventListener(object: ValueEventListener{
@@ -74,20 +77,16 @@ class ChatActivity : AppCompatActivity() {
             val message = messageBox.text.toString()
             val messageObject = Message(message, senderUid)
 
-            mDbRef.child("chats").child(senderRoom!!).child("messages").push()
+            if (message != "") {
+                mDbRef.child("chats").child(senderRoom!!).child("messages").push()
                     .setValue(messageObject).addOnSuccessListener {
                         mDbRef.child("chats").child(receiverRoom!!).child("messages").push()
-                                .setValue(messageObject)
-                                chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
+                            .setValue(messageObject)
+                        chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
                     }
+            }
             messageBox.setText("")
         }
-
-
-
-
-
-
 
     }
 }

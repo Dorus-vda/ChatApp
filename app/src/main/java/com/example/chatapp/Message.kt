@@ -1,5 +1,7 @@
 package com.example.chatapp
 
+import android.util.Log
+
 class Message {
     var message: String? = null
     var senderId: String? = null
@@ -8,6 +10,7 @@ class Message {
 
     constructor(message: String?, senderId: String?){
         this.message = message
+        Log.d("TAG", message.toString())
         this.senderId = senderId
     }
 }
