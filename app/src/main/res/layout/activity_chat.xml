@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/LinearLayout"
         android:layout_alignParentTop="true"
+        android:paddingBottom="60dp"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout

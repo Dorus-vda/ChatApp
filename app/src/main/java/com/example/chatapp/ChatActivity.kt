@@ -58,6 +58,7 @@ class ChatActivity : AppCompatActivity() {
                         for(postSnapshot in snapshot.children){
                             val message = postSnapshot.getValue(Message::class.java)
                             messageList.add(message!!)
+                            chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
                         }
                         messageAdapter.notifyDataSetChanged()
 
