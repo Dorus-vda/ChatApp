@@ -2,6 +2,7 @@ package com.example.chatapp
 
 import android.content.Context
 import android.provider.Telephony
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

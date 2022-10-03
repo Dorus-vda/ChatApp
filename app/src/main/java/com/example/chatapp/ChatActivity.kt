@@ -77,6 +77,7 @@ class ChatActivity : AppCompatActivity() {
                     .setValue(messageObject).addOnSuccessListener {
                         mDbRef.child("chats").child(receiverRoom!!).child("messages").push()
                                 .setValue(messageObject)
+                                chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
                     }
             messageBox.setText("")
         }
