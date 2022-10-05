@@ -11,7 +11,7 @@
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/LinearLayout"
+        android:layout_above="@id/LinearLayout"
         android:layout_alignParentTop="true"
         android:paddingBottom="60dp"
         tools:ignore="MissingConstraints" />
@@ -37,6 +37,7 @@
             android:paddingLeft="10dp"
             android:layout_marginBottom="1dp"
             android:layout_marginLeft="10dp"
+            android:inputType="textAutoCorrect"
             android:background="@drawable/message_box_background"></EditText>
 
         <ImageView

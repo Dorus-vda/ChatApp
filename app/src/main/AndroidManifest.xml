@@ -24,10 +24,8 @@
             android:resource="@color/metis_red" />
 
         <activity
-            android:name=".AnotherActivity"
-            android:exported="false" />
-        <activity
             android:name=".ChatActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".SignUp"

@@ -1,14 +1,15 @@
 package com.example.chatapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View.OnFocusChangeListener
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.example.chatapp.MyFirebaseMessagingService
 
 
 class ChatActivity : AppCompatActivity() {
@@ -50,7 +51,7 @@ class ChatActivity : AppCompatActivity() {
 
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatRecyclerView.adapter = messageAdapter
-        
+
 
         mDbRef.child("chats").child(senderRoom!!).child("messages")
                 .addValueEventListener(object: ValueEventListener{
@@ -82,7 +83,7 @@ class ChatActivity : AppCompatActivity() {
                     .setValue(messageObject).addOnSuccessListener {
                         mDbRef.child("chats").child(receiverRoom!!).child("messages").push()
                             .setValue(messageObject)
-                        chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
+                        chatRecyclerView.smoothScrollToPosition(messageAdapter.itemCount - 1)
                     }
             }
             messageBox.setText("")

@@ -20,7 +20,8 @@
         android:layout_height="40dp"
         android:layout_below="@id/metis_logo"
         android:layout_marginTop="10dp"
-        android:hint="Email"
+        android:hint="MSA email"
+        android:inputType="textEmailAddress"
         android:paddingLeft="15dp"
         android:background="@drawable/edt_background"
         android:layout_marginLeft="20dp"
@@ -34,6 +35,7 @@
         android:layout_marginTop="10dp"
         android:hint="Password"
         android:paddingLeft="15dp"
+        android:inputType="textPassword"
         android:background="@drawable/edt_background"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
