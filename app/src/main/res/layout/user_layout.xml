@@ -4,22 +4,35 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:layout_marginTop="5dp"
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/profile"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="5dp"
         android:text="USER"
         android:textSize="23sp"
-        android:textStyle="bold"
-        android:layout_marginLeft="10dp"></TextView>
+        android:textStyle="bold"></TextView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_name"
-        android:layout_marginLeft="10dp"
-        android:textSize="18sp"
-        android:text="MESSAGE"></TextView>
+        android:layout_alignLeft="@id/profile"
+        android:layout_marginLeft="70dp"
+        android:text="MESSAGE"
+        android:textSize="18sp"></TextView>
+
+    <TextView
+        android:id="@+id/profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/profile_background"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:text="A"
+        android:textColor="@color/white"
+        android:textSize="50sp"></TextView>
 
 
 

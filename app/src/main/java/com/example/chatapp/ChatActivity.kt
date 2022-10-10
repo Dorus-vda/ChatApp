@@ -83,6 +83,9 @@ class ChatActivity : AppCompatActivity() {
             val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$receiverUid$senderUid")
             latestMessageToRef.setValue(messageObject)
 
+
+
+
             if (message != "") {
                 mDbRef.child("chats").child(senderRoom!!).child("messages").push()
                     .setValue(messageObject).addOnSuccessListener {
