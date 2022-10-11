@@ -22,6 +22,7 @@
         android:layout_alignLeft="@id/profile"
         android:layout_marginLeft="70dp"
         android:text="MESSAGE"
+        android:textStyle="italic"
         android:textSize="18sp"></TextView>
 
     <TextView
