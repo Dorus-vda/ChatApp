@@ -25,7 +25,6 @@ class ChatActivity : AppCompatActivity() {
     var senderRoom: String? = null
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -62,7 +61,6 @@ class ChatActivity : AppCompatActivity() {
                         for(postSnapshot in snapshot.children){
                             val message = postSnapshot.getValue(Message::class.java)
                             messageList.add(message!!)
-
                             chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
                         }
                         messageAdapter.notifyDataSetChanged()
@@ -78,9 +76,9 @@ class ChatActivity : AppCompatActivity() {
         sendButton.setOnClickListener(){
             val message = messageBox.text.toString()
             val messageObject = Message(message, senderUid, receiverUid)
-            val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid$receiverUid")
+            val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid")
             latestMessageRef.setValue(messageObject)
-            val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$receiverUid$senderUid")
+            val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$receiverUid/$senderUid")
             latestMessageToRef.setValue(messageObject)
 
 
