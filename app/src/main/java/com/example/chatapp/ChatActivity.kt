@@ -1,5 +1,9 @@
 package com.example.chatapp
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View.OnFocusChangeListener
 import android.widget.EditText
@@ -51,17 +55,19 @@ class ChatActivity : AppCompatActivity() {
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatRecyclerView.adapter = messageAdapter
 
+        createNotificationChannel()
 
         mDbRef.child("chats").child(senderRoom!!).child("messages")
                 .addValueEventListener(object: ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
-
+                        val service = CounterNotificationService(applicationContext)
                         messageList.clear()
 
                         for(postSnapshot in snapshot.children){
                             val message = postSnapshot.getValue(Message::class.java)
                             messageList.add(message!!)
                             chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
+                            service.showNotification(message.message, name)
                         }
                         messageAdapter.notifyDataSetChanged()
 
@@ -82,8 +88,6 @@ class ChatActivity : AppCompatActivity() {
             latestMessageToRef.setValue(messageObject)
 
 
-
-
             if (message != "") {
                 mDbRef.child("chats").child(senderRoom!!).child("messages").push()
                     .setValue(messageObject).addOnSuccessListener {
@@ -95,5 +99,19 @@ class ChatActivity : AppCompatActivity() {
             messageBox.setText("")
         }
 
+    }
+
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel = NotificationChannel(
+                CounterNotificationService.COUNTER_CHANNEL_ID,
+                "counter",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = "Used for the increment counter notifications"
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }
