@@ -40,25 +40,29 @@ class Login : AppCompatActivity() {
 
         isRemembered = sharedPreferences.getBoolean("CHECKBOX", false)
 
-        if(isRemembered){
+        if (isRemembered) {
 
-            val intent = Intent(this, MainActivity::class.java )
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        btnSignUp.setOnClickListener{
+        btnSignUp.setOnClickListener {
             val intent = Intent(this, SignUp::class.java)
             startActivity(intent)
         }
 
-        btnLogin.setOnClickListener{
+        btnLogin.setOnClickListener {
             val email = edtEmail.text.toString()
             val password = edtPassword.text.toString()
-            login(email,password);
+
+            if ((email.isEmpty()) || (password.isEmpty())) {
+                Toast.makeText(this@Login, "Please Enter: Email And Password", Toast.LENGTH_SHORT).show()
+            }else{
+                login(email, password);
+            }
         }
     }
-
     private fun login(email: String, password: String){
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
