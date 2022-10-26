@@ -114,4 +114,5 @@ class ChatActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
 }
