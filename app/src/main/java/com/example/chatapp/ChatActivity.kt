@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
-
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var chatRecyclerView: RecyclerView
@@ -55,8 +54,6 @@ class ChatActivity : AppCompatActivity() {
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatRecyclerView.adapter = messageAdapter
 
-        createNotificationChannel()
-
         mDbRef.child("chats").child(senderRoom!!).child("messages")
                 .addValueEventListener(object: ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -67,7 +64,6 @@ class ChatActivity : AppCompatActivity() {
                             val message = postSnapshot.getValue(Message::class.java)
                             messageList.add(message!!)
                             chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
-                            service.showNotification(message.message, name)
                         }
                         messageAdapter.notifyDataSetChanged()
 
@@ -99,20 +95,6 @@ class ChatActivity : AppCompatActivity() {
             messageBox.setText("")
         }
 
-    }
-
-    private fun createNotificationChannel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel = NotificationChannel(
-                CounterNotificationService.COUNTER_CHANNEL_ID,
-                "counter",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            channel.description = "Used for the increment counter notifications"
-
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
     }
 
 }

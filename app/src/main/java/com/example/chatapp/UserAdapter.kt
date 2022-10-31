@@ -29,10 +29,14 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
         holder.profileLetter.text = currentUser.name.toString().get(0).toString()
         val senderUid = FirebaseAuth.getInstance().uid
         val receiverUid = currentUser.uid
-        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid")
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid") // Get latest message from certain user from database
         ref.child("message").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                holder.messagecontent.text = snapshot.value.toString() //prints "Do you have data? You'll love Firebase."
+                if (snapshot.value.toString() != "null"){ // check if there is a last message
+                    holder.messagecontent.text = snapshot.value.toString()
+                } else { // else leave field empty
+                    holder.messagecontent.text = ""
+                }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
