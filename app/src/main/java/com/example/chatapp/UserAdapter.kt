@@ -26,14 +26,22 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val currentUser = userList[position]
         holder.textName.text = currentUser.name
-        holder.profileLetter.text = currentUser.name.toString().get(0).toString()
+        holder.profileLetter.text = currentUser.name.toString().take(1).capitalize()
         val senderUid = FirebaseAuth.getInstance().uid
         val receiverUid = currentUser.uid
         val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid") // Get latest message from certain user from database
         ref.child("message").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() != "null"){ // check if there is a last message
-                    holder.messagecontent.text = snapshot.value.toString()
+                    holder.messagecontent.post(Runnable {
+                        val lineCnt: Int = holder.messagecontent.getLineCount()
+                        Log.d("TEST", lineCnt.toString())
+                        if (lineCnt > 1){
+                            holder.threeDots.visibility = View.VISIBLE
+                        }else{
+                            holder.messagecontent.text = snapshot.value.toString()
+                        }
+                    })
                 } else { // else leave field empty
                     holder.messagecontent.text = ""
                 }
@@ -62,6 +70,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
         val textName = itemView.findViewById<TextView>(R.id.txt_name)
         val profileLetter = itemView.findViewById<TextView>(R.id.profile)
         val messagecontent = itemView.findViewById<TextView>(R.id.message_content)
+        val threeDots = itemView.findViewById<TextView>(R.id.threedots)
     }
 
 }
