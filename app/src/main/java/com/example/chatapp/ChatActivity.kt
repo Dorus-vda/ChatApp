@@ -37,7 +37,7 @@ class ChatActivity : AppCompatActivity() {
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
 
         mDbRef = FirebaseDatabase.getInstance("https://metischat-default-rtdb.europe-west1.firebasedatabase.app").getReference()
-
+        lifecycle.addObserver(ApplicationObserver())
 
         senderRoom = receiverUid + senderUid
         receiverRoom = senderUid + receiverUid

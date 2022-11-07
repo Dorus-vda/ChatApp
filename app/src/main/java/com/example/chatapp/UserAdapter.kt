@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +41,18 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+        val ref2 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid")
+        ref2.child("message").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.value.toString() != "True"){ // check if there is a last message
+                    holder.onlineled.visibility = View.INVISIBLE
+                } else { // else leave field empty
+                    holder.onlineled.visibility = View.VISIBLE
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+
 
         holder.messagecontent.text = "TEST"
 
@@ -62,6 +75,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
         val textName = itemView.findViewById<TextView>(R.id.txt_name)
         val profileLetter = itemView.findViewById<TextView>(R.id.profile)
         val messagecontent = itemView.findViewById<TextView>(R.id.message_content)
+        val onlineled = itemView.findViewById<ImageView>(R.id.onlineled)
     }
 
 }

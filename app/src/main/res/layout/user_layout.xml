@@ -44,6 +44,15 @@
         android:textColor="@color/white"
         android:textSize="50sp"></TextView>
 
+    <ImageView
+        android:id="@+id/onlineled"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="22dp"
+        android:visibility="invisible"
+        android:src="@drawable/onlineled"></ImageView>
 
 
 </RelativeLayout>
