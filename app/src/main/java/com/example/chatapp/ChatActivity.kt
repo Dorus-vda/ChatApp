@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChatActivity : AppCompatActivity() {
 
@@ -33,8 +35,8 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
         val name = intent.getStringExtra("name")
         val receiverUid = intent.getStringExtra("uid")
-
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
+
 
         mDbRef = FirebaseDatabase.getInstance("https://metischat-default-rtdb.europe-west1.firebasedatabase.app").getReference()
         lifecycle.addObserver(ApplicationObserver())
@@ -77,7 +79,10 @@ class ChatActivity : AppCompatActivity() {
 
         sendButton.setOnClickListener(){
             val message = messageBox.text.toString()
-            val messageObject = Message(message, senderUid, receiverUid)
+            val format = SimpleDateFormat("hh:mm")
+            val time = format.format(Date())
+
+            val messageObject = Message(message, senderUid, receiverUid, time)
             val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid")
             latestMessageRef.setValue(messageObject)
             val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$receiverUid/$senderUid")

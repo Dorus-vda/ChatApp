@@ -21,4 +21,13 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/receivetime"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:text="TEST"
+        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content"></TextView>
+
 </RelativeLayout>

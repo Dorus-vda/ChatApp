@@ -1,6 +1,5 @@
 package com.example.chatapp
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -10,8 +9,8 @@ import androidx.core.app.NotificationCompat
 
 class CounterNotificationService(
     private val context: Context
-)
-    /* { private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+){/*
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     fun showNotification(message: String?, senderName: String?){
         val activityIntent = Intent(context, MainActivity::class.java)
@@ -32,12 +31,9 @@ class CounterNotificationService(
         val notification = NotificationCompat.Builder(context, COUNTER_CHANNEL_ID)
             .setSmallIcon(R.drawable.upscaledmetislogo)
             .setContentTitle(senderName)
-            .setPriority(NotificationManager.IMPORTANCE_MAX)
             .setContentText(message)
             .setContentIntent(activityPendingIntent)
-            .setDefaults(Notification.DEFAULT_ALL)
             .build()
-
 
         notificationManager.notify(1, notification)
 
@@ -45,5 +41,5 @@ class CounterNotificationService(
 
     companion object{
         const val COUNTER_CHANNEL_ID = "counter_channel"
-    }
-} */
+    } */
+}

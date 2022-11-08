@@ -39,10 +39,12 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
 
             val viewHolder = holder as SentViewHolder
             holder.sentMessage.text = currentMessage.message
+            holder.sentTime.text = currentMessage.time
         }else{
             //do stuff for receiving
             val viewHolder = holder as ReceiveViewHolder
             holder.receiveMessage.text = currentMessage.message
+            holder.receiveTime.text = currentMessage.time
         }
 
     }
@@ -63,10 +65,11 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
 
     class SentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val sentMessage = itemView.findViewById<TextView>(R.id.txt_sent_message)
-
+        val sentTime = itemView.findViewById<TextView>(R.id.senttime)
     }
 
     class ReceiveViewHolder(itemView: View)  : RecyclerView.ViewHolder(itemView){
         val receiveMessage = itemView.findViewById<TextView>(R.id.txt_receive_message)
+        val receiveTime = itemView.findViewById<TextView>(R.id.receivetime)
     }
 }
