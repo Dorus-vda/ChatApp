@@ -42,11 +42,11 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
             override fun onCancelled(databaseError: DatabaseError) {}
         })
         val ref2 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid")
-        ref2.child("message").addValueEventListener(object : ValueEventListener {
+        ref2.child("online").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value.toString() != "True"){ // check if there is a last message
+                if (snapshot.value.toString() != "True"){ // check if person is not online
                     holder.onlineled.visibility = View.INVISIBLE
-                } else { // else leave field empty
+                } else { // else show online icon
                     holder.onlineled.visibility = View.VISIBLE
                 }
             }

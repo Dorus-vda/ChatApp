@@ -46,7 +46,6 @@ class ChatActivity : AppCompatActivity() {
 
         supportActionBar?.title = name
 
-
         chatRecyclerView = findViewById(R.id.chatRecyclerView)
         messageBox = findViewById(R.id.messageBox)
         sendButton = findViewById(R.id.sentButton)

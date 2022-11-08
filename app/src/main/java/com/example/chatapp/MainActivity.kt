@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         mDbRef = FirebaseDatabase.getInstance().getReference()
         lifecycle.addObserver(ApplicationObserver())
 
-
         userList = ArrayList()
         adapter = UserAdapter(this, userList)
 
