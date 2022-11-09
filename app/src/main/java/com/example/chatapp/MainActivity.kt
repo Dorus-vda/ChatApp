@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -41,6 +43,9 @@ class MainActivity : AppCompatActivity() {
         userRecyclerView.adapter = adapter
 
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
+
+        mDbRef.child("user").child(FirebaseAuth.getInstance().uid!!).child("online")
+            .setValue("True")
 
         mDbRef.child("user").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

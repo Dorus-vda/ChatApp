@@ -5,7 +5,6 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:background="@drawable/edt_receive"
         android:layout_alignParentRight="false"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
@@ -16,18 +15,21 @@
             android:id="@+id/txt_receive_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/edt_receive"
             android:padding="10dp"
             android:text="This is received message"
             android:textSize="18sp" />
-    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/receivetime"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_alignParentLeft="true"
-        android:text="TEST"
-        android:layout_marginTop="50dp"
-        android:layout_height="wrap_content"></TextView>
+        <TextView
+            android:id="@+id/receivetime"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:text="TEST"
+            android:layout_below="@id/txt_receive_message"
+            android:layout_marginTop="2dp"
+            android:layout_height="wrap_content"></TextView>
+
+    </RelativeLayout>
 
 </RelativeLayout>

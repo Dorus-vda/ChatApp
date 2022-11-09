@@ -27,36 +27,34 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val currentUser = userList[position]
         holder.textName.text = currentUser.name
-        holder.profileLetter.text = currentUser.name.toString().take(1).capitalize()
+        holder.profileLetter.text = currentUser.name.toString().take(1).capitalize() // Set profile letter to first letter of username, capitalized
         val senderUid = FirebaseAuth.getInstance().uid
         val receiverUid = currentUser.uid
-        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid") // Get latest message from certain user from database
-        ref.child("message").addValueEventListener(object : ValueEventListener {
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid") // Database reference to latest messages from the contacts of current user
+        ref.child("message").addValueEventListener(object : ValueEventListener { // Get latest message from certain user from database
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() != "null"){ // check if there is a last message
-                    holder.messagecontent.text = snapshot.value.toString()
+                    holder.messagecontent.text = snapshot.value.toString() // Set latest_message_text to latest message retrieved from database
                 } else { // else leave field empty
                     holder.messagecontent.text = ""
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-        val ref2 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid")
+        val ref2 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid") // Database reference to online status of sender
         ref2.child("online").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() != "True"){ // check if person is not online
-                    holder.onlineled.visibility = View.INVISIBLE
+                    holder.onlineled.visibility = View.INVISIBLE // set online icon to invisible
                 } else { // else show online icon
-                    holder.onlineled.visibility = View.VISIBLE
+                    holder.onlineled.visibility = View.VISIBLE // set online icon to visible
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
 
 
-        holder.messagecontent.text = "TEST"
-
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener{ // Click registration of send button
             val intent = Intent(context,ChatActivity::class.java)
 
             intent.putExtra("name", currentUser.name)
@@ -71,7 +69,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
         return userList.size
     }
 
-    class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){ // References to items in xml files
         val textName = itemView.findViewById<TextView>(R.id.txt_name)
         val profileLetter = itemView.findViewById<TextView>(R.id.profile)
         val messagecontent = itemView.findViewById<TextView>(R.id.message_content)

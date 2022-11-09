@@ -18,13 +18,21 @@ class ApplicationObserver : LifecycleObserver {
             .setValue("True")
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun startSomething() {
         mDbRef.child("user").child(currentUser!!).child("online")
             .setValue("True")
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun pauseSomething() {
+        mDbRef.child("user").child(currentUser!!).child("online")
+            .setValue("False")
+    }
+
+
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun stopSomething() {
         mDbRef.child("user").child(currentUser!!).child("online")
             .setValue("False")
