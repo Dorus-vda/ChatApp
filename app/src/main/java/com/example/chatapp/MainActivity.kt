@@ -7,7 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +21,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.messaging.Constants
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private lateinit var userList: ArrayList<User>
     private lateinit var adapter: UserAdapter
+    private lateinit var toolbarcontent: TextView
+    private lateinit var logoutButton: Button
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
     private lateinit var preferences: SharedPreferences
@@ -31,13 +39,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mAuth = FirebaseAuth.getInstance()
-        mDbRef = FirebaseDatabase.getInstance().getReference()
+        mDbRef = FirebaseDatabase.getInstance("https://metischat-default-rtdb.europe-west1.firebasedatabase.app").getReference()
         lifecycle.addObserver(ApplicationObserver())
 
         userList = ArrayList()
         adapter = UserAdapter(this, userList)
 
         userRecyclerView = findViewById(R.id.userRecyclerView)
+        toolbarcontent = findViewById(R.id.largeToolbarcontent)
+        toolbarcontent.text = "Contacts"
+        logoutButton = findViewById(R.id.LogoutButton)
 
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.adapter = adapter
@@ -72,11 +83,35 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        logoutButton.setOnClickListener(){
+            showPopup(logoutButton)
+        }
+
     }
 
+    fun showPopup(v: View){
+        val editor: SharedPreferences.Editor = preferences.edit()
+        val popup = PopupMenu(this, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu, popup.menu)
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                if (item.itemId == R.id.logout){
+                    mAuth.signOut()
+                    val editor: SharedPreferences.Editor = preferences.edit()
+                    editor.clear()
+                    editor.apply()
 
+                    val intent = Intent(this@MainActivity,Login::class.java)
+                    finish()
+                    startActivity(intent)
+                    true
+            }
+            true
+        })
+        popup.show()
+    }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    /* override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return super.onCreateOptionsMenu(menu)
     }
@@ -97,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
         }
         return true
-    }
+    } */
 
 
 }

@@ -6,9 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View.OnFocusChangeListener
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +20,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatRecyclerView: RecyclerView
     private lateinit var messageBox: EditText
     private lateinit var sendButton: ImageView
+    private lateinit var toolbarContent: TextView
     private lateinit var messageAdapter: messageAdapter
     private lateinit var messageList: ArrayList<Message>
     private lateinit var mDbRef: DatabaseReference
@@ -44,7 +43,8 @@ class ChatActivity : AppCompatActivity() {
         senderRoom = receiverUid + senderUid
         receiverRoom = senderUid + receiverUid
 
-        supportActionBar?.title = name
+        toolbarContent = findViewById(R.id.largeToolbarcontent)
+        toolbarContent.text = name
 
         chatRecyclerView = findViewById(R.id.chatRecyclerView)
         messageBox = findViewById(R.id.messageBox)

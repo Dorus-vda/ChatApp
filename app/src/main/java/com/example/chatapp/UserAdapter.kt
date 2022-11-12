@@ -3,6 +3,8 @@ package com.example.chatapp
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import kotlin.concurrent.schedule
+import java.util.Timer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlin.concurrent.timer
 
 
 class UserAdapter(val context: Context, val userList: ArrayList<User>):
@@ -45,7 +48,12 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
         ref2.child("online").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() != "True"){ // check if person is not online
-                    holder.onlineled.visibility = View.INVISIBLE // set online icon to invisible
+                    if (snapshot.value.toString() == "False") {
+                        holder.onlineled.visibility = View.INVISIBLE // set online icon to invisible
+                    }
+                    else {
+                        holder.onlineled.visibility = View.VISIBLE
+                    }
                 } else { // else show online icon
                     holder.onlineled.visibility = View.VISIBLE // set online icon to visible
                 }
