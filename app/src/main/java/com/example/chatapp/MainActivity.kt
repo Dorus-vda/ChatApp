@@ -1,11 +1,15 @@
 package com.example.chatapp
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Lifecycle
@@ -16,6 +20,11 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.messaging.Constants
+import com.google.firebase.storage.FirebaseStorage
+import id.zelory.compressor.Compressor
+import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,8 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
-        mDbRef.child("user").child(FirebaseAuth.getInstance().uid!!).child("online")
-            .setValue("True")
 
         mDbRef.child("user").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -96,8 +103,50 @@ class MainActivity : AppCompatActivity() {
             return true
 
         }
+
+        if(item.itemId == R.id.profilepic){
+            Log.d("MainActivity", "Profilepic has been picked")
+
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
         return true
     }
 
+    var selectedPhotoUri: Uri? = null
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            Log.d("MainActivity", "Image picked")
+            selectedPhotoUri = data.data
+        }
+        uploadImageToFirebaseStorage()
+    }
+
+    private fun uploadImageToFirebaseStorage(){
+        if (selectedPhotoUri == null)return
+        val uid = FirebaseAuth.getInstance().uid
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+        val uidref = FirebaseDatabase.getInstance().getReference("/user/$uid/profileImageURL")
+
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener{
+                Log.d("MainActivity", "Photo is uploaded ${it.metadata?.path}")
+
+                ref.downloadUrl.addOnSuccessListener {
+                    uidref.setValue(it.toString())
+                        .addOnSuccessListener {
+                            Log.d("MainActivity", "Profile photo register in realtimedatabase")
+                        }
+                }
+            }
+
+
+
+
+    }
 
 }

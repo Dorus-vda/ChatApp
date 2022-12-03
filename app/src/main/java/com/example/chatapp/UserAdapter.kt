@@ -2,6 +2,8 @@ package com.example.chatapp
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
+import java.io.InputStream
+import kotlinx.coroutines.*
 
 
 class UserAdapter(val context: Context, val userList: ArrayList<User>):
@@ -45,16 +50,27 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
         ref2.child("online").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value.toString() != "True"){ // check if person is not online
-                    holder.onlineled.visibility = View.INVISIBLE // set online icon to invisible
+                    if (ref2.child("online").key != "True")
+                        holder.onlineled.visibility = View.INVISIBLE // set online icon to invisible
                 } else { // else show online icon
                     holder.onlineled.visibility = View.VISIBLE // set online icon to visible
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+        val ref3 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid") // Database reference to online status of sender
+        ref3.child("profileImageURL").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.value != null){
+                    holder.profileLetter.visibility = View.INVISIBLE
+                    Picasso.get().load(snapshot.value.toString()).resize(65,65).centerCrop().into(holder.profilePicture)
+                    Log.d("UserAdapter", snapshot.value.toString())
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
 
-
-        holder.itemView.setOnClickListener{ // Click registration of send button
+        holder.itemView.setOnClickListener{
             val intent = Intent(context,ChatActivity::class.java)
 
             intent.putExtra("name", currentUser.name)
@@ -72,6 +88,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
     class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){ // References to items in xml files
         val textName = itemView.findViewById<TextView>(R.id.txt_name)
         val profileLetter = itemView.findViewById<TextView>(R.id.profile)
+        val profilePicture = itemView.findViewById<ImageView>(R.id.profilePicture)
         val messagecontent = itemView.findViewById<TextView>(R.id.message_content)
         val onlineled = itemView.findViewById<ImageView>(R.id.onlineled)
     }

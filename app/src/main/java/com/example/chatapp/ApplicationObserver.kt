@@ -14,27 +14,30 @@ class ApplicationObserver : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun createSomething() {
+        Log.d("ApplicationObserver", "Created")
+        mDbRef.child("user").child(currentUser!!).child("online")
+            .setValue("True")
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun startSomething() {
+        Log.d("ApplicationObserver", "Started")
         mDbRef.child("user").child(currentUser!!).child("online")
             .setValue("True")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun startSomething() {
+    fun resumeSomething() {
+        Log.d("ApplicationObserver", "Resumed")
         mDbRef.child("user").child(currentUser!!).child("online")
             .setValue("True")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun pauseSomething() {
+        Log.d("ApplicationObserver", "Paused")
         mDbRef.child("user").child(currentUser!!).child("online")
             .setValue("False")
     }
 
-
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun stopSomething() {
-        mDbRef.child("user").child(currentUser!!).child("online")
-            .setValue("False")
-    }
 }

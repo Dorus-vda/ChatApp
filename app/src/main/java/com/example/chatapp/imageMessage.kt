@@ -2,19 +2,20 @@ package com.example.chatapp
 
 import android.util.Log
 import java.text.SimpleDateFormat
+import java.util.*
 
-class Message {
-    var message: String? = null
+class imageMessage {
+    var imagePath: String? = null
     var senderId: String? = null
     var receiverId: String? = null
     var time: String? = null
-    var type: String = "text"
+    var type: String = "image"
 
     constructor(){}
 
-    constructor(message: String?, senderId: String?, receiverId: String?, time: String?){
-        this.message = message
-        Log.d("TAG", message.toString())
+    constructor(imagePath: String?, senderId: String?, receiverId: String?, time: String?){
+        this.imagePath = imagePath
+        Log.d("TAG", imagePath.toString())
         this.senderId = senderId
         this.receiverId = receiverId
         this.time = time

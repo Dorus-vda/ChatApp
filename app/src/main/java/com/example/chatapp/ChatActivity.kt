@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.common.internal.service.Common
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
@@ -22,6 +23,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatRecyclerView: RecyclerView
     private lateinit var messageBox: EditText
     private lateinit var sendButton: ImageView
+    private lateinit var cameraButton: ImageView
     private lateinit var messageAdapter: messageAdapter
     private lateinit var messageList: ArrayList<Message>
     private lateinit var mDbRef: DatabaseReference
@@ -49,6 +51,7 @@ class ChatActivity : AppCompatActivity() {
         chatRecyclerView = findViewById(R.id.chatRecyclerView)
         messageBox = findViewById(R.id.messageBox)
         sendButton = findViewById(R.id.sentButton)
+        cameraButton = findViewById(R.id.cameraIcon)
         messageList = ArrayList()
         messageAdapter = messageAdapter(this, messageList)
 
@@ -76,9 +79,13 @@ class ChatActivity : AppCompatActivity() {
 
                 })
 
+        cameraButton.setOnClickListener(){
+            Toast.makeText(this, "CameraPopUP", Toast.LENGTH_SHORT).show()
+        }
+
         sendButton.setOnClickListener(){
             val message = messageBox.text.toString()
-            val format = SimpleDateFormat("hh:mm")
+            val format = SimpleDateFormat("HH:mm")
             val time = format.format(Date())
 
             val messageObject = Message(message, senderUid, receiverUid, time)

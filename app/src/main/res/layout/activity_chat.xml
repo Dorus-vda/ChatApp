@@ -27,6 +27,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints">
 
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/onlineled"
+            android:layout_margin="0dp"
+
+            ></ImageView>
+
         <EditText
             android:id="@+id/messageBox"
             android:layout_width="250dp"
