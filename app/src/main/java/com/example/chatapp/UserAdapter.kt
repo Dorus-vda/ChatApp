@@ -16,7 +16,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.squareup.picasso.Picasso
 import java.io.InputStream
 import kotlinx.coroutines.*
 
@@ -63,7 +62,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null){
                     holder.profileLetter.visibility = View.INVISIBLE
-                    Picasso.get().load(snapshot.value.toString()).resize(65,65).centerCrop().into(holder.profilePicture)
+                    //Picasso.get().load(snapshot.value.toString()).resize(65,65).centerCrop().into(holder.profilePicture)
                     Log.d("UserAdapter", snapshot.value.toString())
                 }
             }
