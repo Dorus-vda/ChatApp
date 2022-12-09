@@ -11,11 +11,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.squareup.picasso.Picasso
 import java.io.InputStream
 import kotlinx.coroutines.*
 
@@ -57,12 +61,12 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>):
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-        val ref3 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid") // Database reference to online status of sender
+        val ref3 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid")
         ref3.child("profileImageURL").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null){
                     holder.profileLetter.visibility = View.INVISIBLE
-                    //Picasso.get().load(snapshot.value.toString()).resize(65,65).centerCrop().into(holder.profilePicture)
+                    Glide.with(context).load(snapshot.value.toString()).override(100,100).centerCrop().into(holder.profilePicture)
                     Log.d("UserAdapter", snapshot.value.toString())
                 }
             }

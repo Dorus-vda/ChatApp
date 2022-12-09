@@ -6,14 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
 
+    <include layout="@layout/toolbar" android:id="@+id/chatToolbar"></include>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/chatToolbar"
         android:layout_above="@id/LinearLayout"
-        android:layout_alignParentTop="true"
         android:paddingBottom="60dp"
+        android:paddingTop="54dp"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout

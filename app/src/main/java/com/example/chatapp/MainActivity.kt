@@ -11,17 +11,24 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.messaging.Constants
 import com.google.firebase.storage.FirebaseStorage
 import id.zelory.compressor.Compressor
+import kotlinx.android.synthetic.main.toolbar.*
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -32,6 +39,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private lateinit var userList: ArrayList<User>
     private lateinit var adapter: UserAdapter
+    private lateinit var toolbarTextContent: TextView
+    private lateinit var toolbarImageContent: ImageView
+    private lateinit var logoutButton: ImageButton
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
     private lateinit var preferences: SharedPreferences
@@ -47,6 +57,10 @@ class MainActivity : AppCompatActivity() {
         adapter = UserAdapter(this, userList)
 
         userRecyclerView = findViewById(R.id.userRecyclerView)
+        toolbarTextContent = findViewById(R.id.largeToolbarcontent)
+        toolbarTextContent.text = "Contacts"
+        toolbarImageContent = findViewById(R.id.toolbarImage)
+        logoutButton = findViewById(R.id.LogoutButton)
 
         userRecyclerView.layoutManager = LinearLayoutManager(this)
         userRecyclerView.adapter = adapter
@@ -79,39 +93,52 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        mDbRef.child("user").child(FirebaseAuth.getInstance().uid.toString()).child("profileImageURL").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Glide.with(this@MainActivity).load(snapshot.value.toString()).override(100,100).centerCrop().into(toolbarImageContent)
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+
+
+        logoutButton.setOnClickListener(){
+            showPopup(logoutButton)
+        }
     }
 
 
+    fun showPopup(v: View){
+        val editor: SharedPreferences.Editor = preferences.edit()
+        val popup = PopupMenu(this, v)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu, popup.menu)
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+            if (item.itemId == R.id.logout){
+                mAuth.signOut()
+                val editor: SharedPreferences.Editor = preferences.edit()
+                editor.clear()
+                editor.apply()
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu,menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+                val intent = Intent(this@MainActivity,Login::class.java)
+                finish()
+                startActivity(intent)
+                true
+            }
+            if(item.itemId == R.id.profilepic){
+                Log.d("MainActivity", "Profilepic has been picked")
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if(item.itemId ==  R.id.logout){
-            // write the login for the logout
-            mAuth.signOut()
-            val editor: SharedPreferences.Editor = preferences.edit()
-            editor.clear()
-            editor.apply()
-
-            val intent = Intent(this@MainActivity,Login::class.java)
-            finish()
-            startActivity(intent)
-            return true
-
-        }
-
-        if(item.itemId == R.id.profilepic){
-            Log.d("MainActivity", "Profilepic has been picked")
-
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 0)
-        }
-        return true
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                startActivityForResult(intent, 0)
+            }
+            true
+        })
+        popup.show()
     }
 
     var selectedPhotoUri: Uri? = null

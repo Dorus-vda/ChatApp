@@ -10,14 +10,16 @@
         android:id="@+id/mainToolbar"
         layout="@layout/toolbar"></include>
 
-    <Button
+    <ImageButton
         android:id="@+id/LogoutButton"
         android:backgroundTint="@color/metis_red"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="53dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:padding="1dp"
         android:layout_alignTop="@id/mainToolbar"
-        android:padding="15dp"
-        android:text="Log Out"
+        android:src="@drawable/menubutton"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_alignRight="@id/mainToolbar"/>
@@ -25,8 +27,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userRecyclerView"
         android:layout_width="match_parent"
-        android:layout_below="@id/mainToolbar"
         android:layout_height="match_parent"
+        android:layout_below="@id/mainToolbar"
 
         tools:listitem="@layout/user_layout" />
 
