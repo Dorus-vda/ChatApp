@@ -134,7 +134,15 @@ class MainActivity : AppCompatActivity() {
                 intent.type = "image/*"
                 startActivityForResult(intent, 0)
             }
-            true
+                true
+            if(item.itemId == R.id.addcontact){
+                Log.d("MainActivity", "AddContact has been clicked")
+
+                val intent = Intent(this@MainActivity, ContactList::class.java)
+                finish()
+                startActivity(intent)
+            }
+                true
         })
         popup.show()
     }

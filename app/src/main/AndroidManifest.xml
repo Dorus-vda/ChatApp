@@ -36,6 +36,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".ContactList"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".Login"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"

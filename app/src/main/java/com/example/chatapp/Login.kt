@@ -53,7 +53,7 @@ class Login : AppCompatActivity() {
         }
 
         btnLogin.setOnClickListener {
-            val email = edtEmail.text.toString()
+            val email = edtEmail.text.toString().trimEnd()
             val password = edtPassword.text.toString()
 
             if ((email.isEmpty()) || (password.isEmpty())) {
@@ -67,7 +67,7 @@ class Login : AppCompatActivity() {
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val email = edtEmail.text.toString()
+                    val email = edtEmail.text.toString().trimEnd()
                     val password = edtPassword.text.toString()
                     val checked: Boolean = rememberMe.isChecked
 

@@ -36,6 +36,10 @@ class SignUp : AppCompatActivity() {
             if ((name.isEmpty()) || (email.isEmpty()) || (password.isEmpty())) {
                 Toast.makeText(this@SignUp, "Please Enter: Name, Email And Password", Toast.LENGTH_SHORT).show()
             }else{
+                if (!email.endsWith("msa.nl")) {
+                    Toast.makeText(this@SignUp, "Please use an email address with msa.nl to sign up.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 signUp(name, email, password)
             }
         }
