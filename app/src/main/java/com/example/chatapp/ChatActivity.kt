@@ -165,11 +165,12 @@ class ChatActivity : AppCompatActivity() {
         if (cameraPhotoURI == null)return
         val format = SimpleDateFormat("HH:mm")
         val time = format.format(Date())
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
         val type = "image"
         val filename = UUID.randomUUID().toString()
         val senderRef = FirebaseDatabase.getInstance().getReference("/chats/$senderRoom/messages")
         val receiverRef =  FirebaseDatabase.getInstance().getReference("/chats/$receiverRoom/messages")
-        val ref = FirebaseStorage.getInstance().getReference("/images/messageimages$filename")
+        val ref = FirebaseStorage.getInstance().getReference("/images/messageimages/$uid/$filename")
 
         ref.putFile(cameraPhotoURI!!)
             .addOnSuccessListener {

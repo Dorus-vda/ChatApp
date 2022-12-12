@@ -41,26 +41,29 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
             // do the things to sent view holder
             val viewHolder = holder as SentViewHolder
             if (currentMessage.type != "image") {
+                holder.sentImage.visibility = View.GONE
                 holder.sentMessage.text = currentMessage.message
                 holder.sentTime.text = currentMessage.time
+                holder.sentMessage.visibility = View.VISIBLE
             } else {
                 holder.sentMessage.visibility = View.INVISIBLE
-                Log.d("messageAdapter", currentMessage.message.toString())
                 Glide.with(context).load(currentMessage.message).into(holder.sentImage)
-                holder.sentImage.visibility = View.VISIBLE
                 holder.sentTime.text = currentMessage.time
+                holder.sentImage.visibility = View.VISIBLE
             }
         }else{
             //do stuff for receiving
             val viewHolder = holder as ReceiveViewHolder
             if (currentMessage.type != "image"){
+                holder.receiveImage.visibility = View.GONE
                 holder.receiveMessage.text = currentMessage.message
                 holder.receiveTime.text = currentMessage.time
+                holder.receiveMessage.visibility = View.VISIBLE
             } else {
                 holder.receiveMessage.visibility = View.INVISIBLE
                 Glide.with(context).load(currentMessage.message).into(holder.receiveImage)
-                holder.receiveImage.visibility = View.VISIBLE
                 holder.receiveTime.text = currentMessage.time
+                holder.receiveImage.visibility = View.VISIBLE
             }
         }
 
