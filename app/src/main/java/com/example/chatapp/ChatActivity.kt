@@ -1,11 +1,13 @@
 package com.example.chatapp
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.content.ContentValues
 import android.content.Context
-import android.os.Build
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
-import android.view.View.OnFocusChangeListener
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,14 +16,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-import com.google.android.gms.common.internal.service.Common
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.toolbar.*
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ChatActivity : AppCompatActivity() {
 
@@ -33,22 +35,21 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var toolbarImageContent: ImageView
     private lateinit var messageAdapter: messageAdapter
     private lateinit var messageList: ArrayList<Message>
-    private lateinit var mDbRef: DatabaseReference
     private lateinit var adapter: UserAdapter
 
+    var imageFilePath: String? = null
     var receiverRoom: String? = null
     var senderRoom: String? = null
-
+    var receiverUid: String? = null
+    var mDbRef: DatabaseReference = FirebaseDatabase.getInstance("https://metischat-default-rtdb.europe-west1.firebasedatabase.app").getReference()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         val name = intent.getStringExtra("name")
-        val receiverUid = intent.getStringExtra("uid")
+        receiverUid = intent.getStringExtra("uid")
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
 
-
-        mDbRef = FirebaseDatabase.getInstance("https://metischat-default-rtdb.europe-west1.firebasedatabase.app").getReference()
         lifecycle.addObserver(ApplicationObserver())
 
         senderRoom = receiverUid + senderUid
@@ -72,8 +73,7 @@ class ChatActivity : AppCompatActivity() {
 
         mDbRef.child("user").child(receiverUid.toString()).child("profileImageURL").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                //Glide.with(this@ChatActivity).load(snapshot.value.toString()).override(100,100).centerCrop().into(toolbarImageContent)
-                adapter.notifyDataSetChanged()
+                Glide.with(this@ChatActivity).load(snapshot.value.toString()).override(80,80).centerCrop().into(toolbarImageContent)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -103,16 +103,18 @@ class ChatActivity : AppCompatActivity() {
                 })
 
         cameraButton.setOnClickListener(){
-            Toast.makeText(this, "CameraPopUP", Toast.LENGTH_SHORT).show()
+            openCameraIntent()
         }
+
 
         sendButton.setOnClickListener(){
             val message = messageBox.text.toString()
             val format = SimpleDateFormat("HH:mm")
             val time = format.format(Date())
+            val type = "text"
 
-            val messageObject = Message(message, senderUid, receiverUid, time)
-            val sentMessageObject = Message("You: " + message, senderUid, receiverUid, time)
+            val messageObject = Message(message, senderUid, receiverUid, time, type)
+            val sentMessageObject = Message("You: " + message, senderUid, receiverUid, time, type)
 
             val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid")
             latestMessageRef.setValue(sentMessageObject)
@@ -132,5 +134,70 @@ class ChatActivity : AppCompatActivity() {
         }
 
     }
+
+    var imageLocationUri: Uri? = null
+
+    fun openCameraIntent(){
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "New Picture")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
+        val imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        imageLocationUri = imageUri
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        if (takePictureIntent.resolveActivity(packageManager) != null){
+            startActivityForResult(takePictureIntent, 0)
+        }
+    }
+
+    var cameraPhotoURI: Uri? = null
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            cameraPhotoURI = imageLocationUri
+            Toast.makeText(this@ChatActivity, cameraPhotoURI.toString(), Toast.LENGTH_SHORT).show()
+            uploadImageToFirebaseStorage()
+        }
+    }
+
+    private fun uploadImageToFirebaseStorage(){
+        if (cameraPhotoURI == null)return
+        val format = SimpleDateFormat("HH:mm")
+        val time = format.format(Date())
+        val type = "image"
+        val filename = UUID.randomUUID().toString()
+        val senderRef = FirebaseDatabase.getInstance().getReference("/chats/$senderRoom/messages")
+        val receiverRef =  FirebaseDatabase.getInstance().getReference("/chats/$receiverRoom/messages")
+        val ref = FirebaseStorage.getInstance().getReference("/images/messageimages$filename")
+
+        ref.putFile(cameraPhotoURI!!)
+            .addOnSuccessListener {
+                Log.d("MainActivity", "Photo is uploaded ${it.metadata?.path}")
+                ref.downloadUrl.addOnSuccessListener {
+                    val messageObject = Message(it.toString(), FirebaseAuth.getInstance().currentUser?.uid, receiverUid, time, type)
+                    senderRef.push()
+                        .setValue(messageObject).addOnSuccessListener {
+                            receiverRef.push()
+                                .setValue(messageObject)
+                            chatRecyclerView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                        }
+                }
+            }
+
+    }
+
+   /* fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(
+            inContext.getContentResolver(),
+            inImage,
+            "Title",
+            null
+        )
+        return Uri.parse(path)
+    }*/
+
 
 }

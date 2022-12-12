@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userList: ArrayList<User>
     private lateinit var adapter: UserAdapter
     private lateinit var toolbarTextContent: TextView
-    private lateinit var toolbarImageContent: ImageView
     private lateinit var logoutButton: ImageButton
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
@@ -59,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         userRecyclerView = findViewById(R.id.userRecyclerView)
         toolbarTextContent = findViewById(R.id.largeToolbarcontent)
         toolbarTextContent.text = "Contacts"
-        toolbarImageContent = findViewById(R.id.toolbarImage)
         logoutButton = findViewById(R.id.LogoutButton)
 
         userRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -95,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         mDbRef.child("user").child(FirebaseAuth.getInstance().uid.toString()).child("profileImageURL").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Glide.with(this@MainActivity).load(snapshot.value.toString()).override(100,100).centerCrop().into(toolbarImageContent)
+                Glide.with(this@MainActivity).load(snapshot.value.toString()).override(80,80).centerCrop().into(findViewById(R.id.toolbarImage))
                 adapter.notifyDataSetChanged()
             }
 

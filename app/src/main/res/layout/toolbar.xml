@@ -8,15 +8,19 @@
         android:id="@+id/toolbarImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:paddingLeft="4dp"
-        android:layout_margin="2dp"></de.hdodenhof.circleimageview.CircleImageView>
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="4dp"></de.hdodenhof.circleimageview.CircleImageView>
 
     <TextView
         android:id="@+id/largeToolbarcontent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_marginLeft="60dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/toolbarImage"
         android:text="USERNAME"
         android:textColor="@color/white"
         android:textSize="25sp"

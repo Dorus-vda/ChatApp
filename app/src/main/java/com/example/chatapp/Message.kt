@@ -8,11 +8,11 @@ class Message {
     var senderId: String? = null
     var receiverId: String? = null
     var time: String? = null
-    var type: String = "text"
+    var type: String? = null
 
     constructor(){}
 
-    constructor(message: String?, senderId: String?, receiverId: String?, time: String?){
+    constructor(message: String?, senderId: String?, receiverId: String?, time: String?, type: String?){
         this.message = message
         Log.d("TAG", message.toString())
         this.senderId = senderId
