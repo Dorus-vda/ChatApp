@@ -81,7 +81,7 @@ class ContactList : AppCompatActivity() {
 
                                 // Create a reference to the recipient user's friend requests node
                                 val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserId.toString())
-                                friendRequestReference.push().child("Sender_Id").setValue(currentUserId.toString())
+                                friendRequestReference.push().setValue(currentUserId.toString())
                                     .addOnSuccessListener {
                                         Toast.makeText(this@ContactList, "Request has been sent", Toast.LENGTH_SHORT).show()
                                         // Friend request sent successfully
