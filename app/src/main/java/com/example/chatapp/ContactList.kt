@@ -1,33 +1,15 @@
 package com.example.chatapp
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.provider.MediaStore
-import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.widget.*
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.messaging.Constants
-import com.google.firebase.storage.FirebaseStorage
-import id.zelory.compressor.Compressor
-import java.io.File
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ContactList : AppCompatActivity() {
@@ -73,47 +55,63 @@ class ContactList : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-    }
 
-    private fun sendFriendRequest(recipientUserId: String) {
+    private fun sendFriendRequest(recipientEmail: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             val currentUserId = currentUser.uid
             val usersReference = mDbRef.child("user")
-            val recipientUserReference = usersReference.child(recipientUserId)
 
-            recipientUserReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            // Query the database for a user with the given email address
+            val query = usersReference.orderByChild("email").equalTo(recipientEmail)
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val recipientUser = dataSnapshot.getValue(User::class.java)
-                    if (recipientUser != null) {
-                        // Recipient user exists, so we can send the friend request
-                        val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserId)
-                        val requestData = HashMap<String, Any>()
-                        requestData["sender_id"] = currentUserId
-                        requestData["timestamp"] = System.currentTimeMillis()
-                        friendRequestReference.setValue(requestData)
-                            .addOnSuccessListener {
-                                Toast.makeText(this@ContactList, "Request has been sent", Toast.LENGTH_SHORT).show()
-                            // Friend request sent successfully
+                    // Check if there is a user with the given email address
+                    if (dataSnapshot.exists()) {
+                        // User exists, so we can send the friend request
+
+                        // Iterate over the list of users who match the query criteria
+                        for (userSnapshot in dataSnapshot.children) {
+                            // Get the user data from the snapshot
+                            val user = userSnapshot.getValue(User::class.java)
+
+                            // Use the user data to send the friend request
+                            if (user != null) {
+                                val recipientUserId = user?.uid
+
+                                val recipientUserIdString = recipientUserId.toString()
+                                // Create a reference to the recipient user's friend requests node
+                                val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserIdString)
+                                val requestData = HashMap<String, Any>()
+                                requestData["sender_id"] = currentUserId
+                                friendRequestReference.setValue(requestData)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(this@ContactList, "Request has been sent", Toast.LENGTH_SHORT).show()
+                                        // Friend request sent successfully
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(this@ContactList, "Failed to send", Toast.LENGTH_SHORT).show()
+                                        // Failed to send friend request
+                                    }
                             }
-                            .addOnFailureListener {
-                                Toast.makeText(this@ContactList, "Failed to send", Toast.LENGTH_SHORT).show()
-                            // Failed to send friend request
-                            }
+                        }
                     } else {
                         Toast.makeText(this@ContactList, "User doesn't exist", Toast.LENGTH_SHORT).show()
                         // Recipient user does not exist, so we cannot send the friend request
                     }
                 }
 
+
                 override fun onCancelled(databaseError: DatabaseError) {
                     // Failed to retrieve recipient user data
                 }
             })
         }
+    }
+
+            override fun onBackPressed() {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
     }
 
 }
