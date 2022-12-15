@@ -1,9 +1,7 @@
 package com.example.chatapp
 
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -16,11 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.toolbar.*
-import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,9 +32,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var toolbarImageContent: ImageView
     private lateinit var messageAdapter: messageAdapter
     private lateinit var messageList: ArrayList<Message>
-    private lateinit var adapter: UserAdapter
 
-    var imageFilePath: String? = null
     var receiverRoom: String? = null
     var senderRoom: String? = null
     var receiverUid: String? = null
@@ -49,6 +44,7 @@ class ChatActivity : AppCompatActivity() {
         val name = intent.getStringExtra("name")
         receiverUid = intent.getStringExtra("uid")
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
+
 
         lifecycle.addObserver(ApplicationObserver())
 
@@ -84,15 +80,15 @@ class ChatActivity : AppCompatActivity() {
         mDbRef.child("chats").child(senderRoom!!).child("messages")
                 .addValueEventListener(object: ValueEventListener{
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val service = CounterNotificationService(applicationContext)
                         messageList.clear()
 
                         for(postSnapshot in snapshot.children){
                             val message = postSnapshot.getValue(Message::class.java)
                             messageList.add(message!!)
-                            chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
                         }
                         messageAdapter.notifyDataSetChanged()
+
+                        chatRecyclerView.scrollToPosition(messageAdapter.itemCount - 1)
 
                     }
 
@@ -105,6 +101,7 @@ class ChatActivity : AppCompatActivity() {
         cameraButton.setOnClickListener(){
             openCameraIntent()
         }
+
 
 
         sendButton.setOnClickListener(){
@@ -127,17 +124,28 @@ class ChatActivity : AppCompatActivity() {
                     .setValue(messageObject).addOnSuccessListener {
                         mDbRef.child("chats").child(receiverRoom!!).child("messages").push()
                             .setValue(messageObject)
-                        chatRecyclerView.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                        chatRecyclerView.smoothScrollToPosition(messageAdapter.itemCount -1)
                     }
             }
             messageBox.setText("")
         }
 
+        chatRecyclerView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if (bottom < oldBottom) {
+                chatRecyclerView.postDelayed({
+                    chatRecyclerView.smoothScrollToPosition(
+                        chatRecyclerView.adapter!!.itemCount - 1
+                    )
+                }, 100)
+            }
+        }
+
     }
+
 
     var imageLocationUri: Uri? = null
 
-    fun openCameraIntent(){
+    private fun openCameraIntent(){
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
         values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
@@ -181,24 +189,10 @@ class ChatActivity : AppCompatActivity() {
                         .setValue(messageObject).addOnSuccessListener {
                             receiverRef.push()
                                 .setValue(messageObject)
-                            chatRecyclerView.smoothScrollToPosition(messageAdapter.itemCount - 1)
                         }
                 }
             }
-
     }
-
-   /* fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(
-            inContext.getContentResolver(),
-            inImage,
-            "Title",
-            null
-        )
-        return Uri.parse(path)
-    }*/
 
 
 }

@@ -33,8 +33,8 @@
             android:id="@+id/cameraIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/onlineled"
-            android:layout_margin="0dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/cameraicon"
 
             ></ImageView>
 

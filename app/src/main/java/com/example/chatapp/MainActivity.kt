@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         mDbRef.child("user").child(FirebaseAuth.getInstance().uid.toString()).child("profileImageURL").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Glide.with(this@MainActivity).load(snapshot.value.toString()).override(80,80).centerCrop().into(findViewById(R.id.toolbarImage))
+                    Glide.with(this@MainActivity).load(snapshot.value.toString()).override(80,80).centerCrop().into(findViewById(R.id.toolbarImage))
                 adapter.notifyDataSetChanged()
             }
 

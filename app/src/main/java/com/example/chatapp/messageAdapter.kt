@@ -15,11 +15,11 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 
 class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
+
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val ITEM_RECEIVE = 1
     val ITEM_SENT = 2
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -46,10 +46,10 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
                 holder.sentTime.text = currentMessage.time
                 holder.sentMessage.visibility = View.VISIBLE
             } else {
-                holder.sentMessage.visibility = View.INVISIBLE
-                Glide.with(context).load(currentMessage.message).into(holder.sentImage)
-                holder.sentTime.text = currentMessage.time
                 holder.sentImage.visibility = View.VISIBLE
+                Glide.with(context).load(currentMessage.message).override(200, holder.sentImage.maxHeight).into(holder.sentImage)
+                holder.sentMessage.visibility = View.GONE
+                holder.sentTime.text = currentMessage.time
             }
         }else{
             //do stuff for receiving
@@ -60,10 +60,10 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
                 holder.receiveTime.text = currentMessage.time
                 holder.receiveMessage.visibility = View.VISIBLE
             } else {
-                holder.receiveMessage.visibility = View.INVISIBLE
-                Glide.with(context).load(currentMessage.message).into(holder.receiveImage)
-                holder.receiveTime.text = currentMessage.time
                 holder.receiveImage.visibility = View.VISIBLE
+                Glide.with(context).load(currentMessage.message).override(holder.receiveImage.width, holder.receiveImage.height).fitCenter().into(holder.receiveImage)
+                holder.receiveMessage.visibility = View.GONE
+                holder.receiveTime.text = currentMessage.time
             }
         }
 
@@ -94,4 +94,5 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
         val receiveMessage = itemView.findViewById<TextView>(R.id.txt_receive_message)
         val receiveTime = itemView.findViewById<TextView>(R.id.receivetime)
     }
+
 }
