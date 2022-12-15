@@ -43,7 +43,7 @@ class ContactList : AppCompatActivity() {
 
 
         btnAdd.setOnClickListener {
-            val email = edtEmail.text.toString()
+            val email = edtEmail.text.toString().trimEnd()
 
             if ((email.isEmpty())) {
                 Toast.makeText(this@ContactList, "Please Enter: Email", Toast.LENGTH_SHORT).show()
@@ -59,7 +59,7 @@ class ContactList : AppCompatActivity() {
     private fun sendFriendRequest(recipientEmail: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
-            val currentUserId = currentUser.uid
+            val currentUserId = FirebaseAuth.getInstance().uid
             val usersReference = mDbRef.child("user")
 
             // Query the database for a user with the given email address
@@ -79,12 +79,9 @@ class ContactList : AppCompatActivity() {
                             if (user != null) {
                                 val recipientUserId = user?.uid
 
-                                val recipientUserIdString = recipientUserId.toString()
                                 // Create a reference to the recipient user's friend requests node
-                                val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserIdString)
-                                val requestData = HashMap<String, Any>()
-                                requestData["sender_id"] = currentUserId
-                                friendRequestReference.setValue(requestData)
+                                val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserId.toString())
+                                friendRequestReference.push().child("Sender_Id").setValue(currentUserId.toString())
                                     .addOnSuccessListener {
                                         Toast.makeText(this@ContactList, "Request has been sent", Toast.LENGTH_SHORT).show()
                                         // Friend request sent successfully
