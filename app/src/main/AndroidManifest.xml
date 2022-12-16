@@ -26,6 +26,12 @@
             android:resource="@color/metis_red" />
 
         <activity
+            android:name=".PhotoActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".ChatActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false"

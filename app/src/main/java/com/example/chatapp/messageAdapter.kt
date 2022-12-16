@@ -1,6 +1,7 @@
 package com.example.chatapp
 
 import android.content.Context
+import android.content.Intent
 import android.media.Image
 import android.provider.Telephony
 import android.util.Log
@@ -67,7 +68,19 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
             }
         }
 
+        holder.itemView.setOnClickListener(){
+            if (currentMessage.type == "image"){
+                val intent = Intent(context,PhotoActivity::class.java)
+
+                intent.putExtra("imageURL", currentMessage.message)
+
+                context.startActivities(arrayOf(intent))
+            }
+        }
+
     }
+
+
 
     override fun getItemViewType(position: Int): Int {
         val currentMessage = messageList[position]
