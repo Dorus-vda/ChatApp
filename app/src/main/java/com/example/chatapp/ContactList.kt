@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -35,8 +36,12 @@ class ContactList : AppCompatActivity() {
         adapter = UserAdapter(this, userList)
 
         edtEmail = findViewById(R.id.edt_email)
+        userRecyclerView = findViewById(R.id.userRecyclerView)
         toolbarcontent = findViewById(R.id.largeToolbarcontent)
         toolbarcontent.text = "Add Contact"
+
+        userRecyclerView.layoutManager = LinearLayoutManager(this)
+        userRecyclerView.adapter = adapter
 
         edtEmail = findViewById(R.id.edt_email)
         btnAdd = findViewById(R.id.btn_add)
@@ -60,27 +65,32 @@ class ContactList : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             val currentUserId = FirebaseAuth.getInstance().uid
+
             val usersReference = mDbRef.child("user")
+            if (recipientEmail == currentUser.email) {
+                Toast.makeText(this@ContactList, "You cannot send a friend request to yourself", Toast.LENGTH_SHORT).show()
+                return
+            }
 
             // Query the database for a user with the given email address
             val query = usersReference.orderByChild("email").equalTo(recipientEmail)
             query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Check if there is a user with the given email address
+
                     if (dataSnapshot.exists()) {
                         // User exists, so we can send the friend request
+                        val recipientUserId = dataSnapshot.children.first().getValue(User::class.java)?.uid
+                        val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserId.toString())
 
-                        // Iterate over the list of users who match the query criteria
-                        for (userSnapshot in dataSnapshot.children) {
-                            // Get the user data from the snapshot
-                            val user = userSnapshot.getValue(User::class.java)
-
-                            // Use the user data to send the friend request
-                            if (user != null) {
-                                val recipientUserId = user?.uid
-
-                                // Create a reference to the recipient user's friend requests node
-                                val friendRequestReference = mDbRef.child("friend_requests").child(recipientUserId.toString())
+                        friendRequestReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(friendRequestSnapshot: DataSnapshot) {
+                                // Check if a friend request is already pending for the recipient user
+                                if (friendRequestSnapshot.exists()) {
+                                    Toast.makeText(this@ContactList, "Friend request already sent", Toast.LENGTH_SHORT).show()
+                                    return
+                                }
+                                // Send the friend request
                                 friendRequestReference.push().setValue(currentUserId.toString())
                                     .addOnSuccessListener {
                                         Toast.makeText(this@ContactList, "Request has been sent", Toast.LENGTH_SHORT).show()
@@ -91,26 +101,33 @@ class ContactList : AppCompatActivity() {
                                         // Failed to send friend request
                                     }
                             }
-                        }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                // Failed to retrieve friend request data
+                            }
+                        })
+
+                        // Check the flag before sending a new friend request
                     } else {
-                        Toast.makeText(this@ContactList, "User doesn't exist", Toast.LENGTH_SHORT).show()
-                        // Recipient user does not exist, so we cannot send the friend request
+                        Toast.makeText(this@ContactList, "User doesn't exist", Toast.LENGTH_SHORT)
+                            .show()
+                        // Recipient user does
                     }
                 }
 
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Failed to retrieve recipient user data
-                }
-            })
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Failed to retrieve recipient user data
+                    }
+                })
+            }
         }
-    }
 
-            override fun onBackPressed() {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-    }
+                override fun onBackPressed() {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+        }
 
-}
+    }
 
 
