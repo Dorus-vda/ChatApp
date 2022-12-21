@@ -2,6 +2,7 @@ package com.example.chatapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.nio.file.Files.exists
 
 
 class ContactList : AppCompatActivity() {
@@ -19,7 +21,7 @@ class ContactList : AppCompatActivity() {
     private lateinit var btnAdd: Button
     private lateinit var userRecyclerView: RecyclerView
     private lateinit var userList: ArrayList<User>
-    private lateinit var adapter: UserAdapter
+    private lateinit var adapter: contactAdapter
     private lateinit var toolbarcontent: TextView
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
@@ -33,7 +35,7 @@ class ContactList : AppCompatActivity() {
         lifecycle.addObserver(ApplicationObserver())
 
         userList = ArrayList()
-        adapter = UserAdapter(this, userList)
+        adapter = contactAdapter(this, userList)
 
         edtEmail = findViewById(R.id.edt_email)
         userRecyclerView = findViewById(R.id.userRecyclerView)
@@ -46,6 +48,37 @@ class ContactList : AppCompatActivity() {
         edtEmail = findViewById(R.id.edt_email)
         btnAdd = findViewById(R.id.btn_add)
 
+
+        mDbRef.child("friend_requests").child(FirebaseAuth.getInstance().uid.toString()).addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(postSnapshot in snapshot.children){
+
+                    val requestId = postSnapshot.getValue()
+                    mDbRef.child("user").child(requestId.toString()).addListenerForSingleValueEvent(object :
+                    ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()){
+                                val currentContact = snapshot.getValue(User::class.java)
+                                userList.add(currentContact!!)
+                            }
+                        }
+                        override fun onCancelled(error: DatabaseError){
+
+                        }
+                    })
+
+
+                }
+
+                adapter.notifyDataSetChanged()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
         btnAdd.setOnClickListener {
             val email = edtEmail.text.toString().trimEnd()
