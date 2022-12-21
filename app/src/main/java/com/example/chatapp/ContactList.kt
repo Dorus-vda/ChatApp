@@ -51,6 +51,7 @@ class ContactList : AppCompatActivity() {
 
         mDbRef.child("friend_requests").child(FirebaseAuth.getInstance().uid.toString()).addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                userList.clear()
                 for(postSnapshot in snapshot.children){
 
                     val requestId = postSnapshot.getValue()
@@ -60,6 +61,7 @@ class ContactList : AppCompatActivity() {
                             if (snapshot.exists()){
                                 val currentContact = snapshot.getValue(User::class.java)
                                 userList.add(currentContact!!)
+                                adapter.notifyDataSetChanged()
                             }
                         }
                         override fun onCancelled(error: DatabaseError){
@@ -70,7 +72,6 @@ class ContactList : AppCompatActivity() {
 
                 }
 
-                adapter.notifyDataSetChanged()
 
             }
 
@@ -119,7 +120,7 @@ class ContactList : AppCompatActivity() {
                         friendRequestReference.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(friendRequestSnapshot: DataSnapshot) {
                                 // Check if a friend request is already pending for the recipient user
-                                if (friendRequestSnapshot.exists()) {
+                                if (friendRequestSnapshot.child(currentUserId.toString()).exists()) {
                                     Toast.makeText(this@ContactList, "Friend request already sent", Toast.LENGTH_SHORT).show()
                                     return
                                 }

@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
 
-        mDbRef.child("user").addValueEventListener(object: ValueEventListener {
+        mDbRef.child("friends_list").child(mAuth.uid.toString()).addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 userList.clear()

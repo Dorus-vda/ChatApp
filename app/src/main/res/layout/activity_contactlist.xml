@@ -7,25 +7,16 @@
     tools:context=".ContactList">
 
     <include
-        android:id="@+id/mainToolbar"
+        android:id="@+id/contactToolbar"
         layout="@layout/toolbar"></include>
-
-    <ImageView
-        android:id="@+id/metis_logo"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/upscaledmetislogo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"/>
 
     <EditText
         android:id="@+id/edt_email"
-        android:layout_width="match_parent"
+        android:layout_width="270dp"
         android:layout_height="40dp"
-        android:layout_below="@id/metis_logo"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="110dp"
+        android:layout_below="@id/contactToolbar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/edt_background"
         android:hint="MSA email"
         android:inputType="textEmailAddress"
@@ -34,10 +25,11 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_add"
         android:layout_width="100dp"
+        android:layout_alignParentRight="true"
         android:layout_height="40dp"
-        android:layout_below="@id/metis_logo"
-        android:layout_marginLeft="255dp"
-        android:layout_marginTop="10dp"
+        android:layout_below="@id/contactToolbar"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
         android:background="@drawable/btn_background"
         android:text="Add"
         android:textColor="@color/white"
@@ -46,9 +38,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userRecyclerView"
         android:layout_width="match_parent"
-        android:layout_marginTop="50dp"
         android:layout_height="match_parent"
         android:layout_below="@+id/edt_email"
+        android:layout_marginTop="50dp"
 
         tools:listitem="@layout/user_contaclist" />
 
