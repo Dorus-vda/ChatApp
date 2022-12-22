@@ -41,39 +41,62 @@ class contactAdapter(val context: Context, val userList: ArrayList<User>):
             override fun onCancelled(databaseError: DatabaseError) {}
         })
 
-        holder.acceptButton.setOnClickListener(){
+        // Set an OnClickListener for the acceptButton
+        holder.acceptButton.setOnClickListener() {
+            // Get a reference to the Firebase Database
             val ref = FirebaseDatabase.getInstance().reference
+
+            // Get a reference to the "friend_requests" child node for the current user
             val friendRequestReference = ref.child("friend_requests").child(currentUserUID.toString())
-            friendRequestReference.addListenerForSingleValueEvent(object: ValueEventListener{
+
+            // Add a listener for a single value event to retrieve the friend requests for the current user
+            friendRequestReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    // Log the snapshot value
                     Log.d("contactList", snapshot.value.toString())
-                    for (dataSnapshot in snapshot.children){
-                        if(dataSnapshot.value == contactUser.uid){
+
+                    // Iterate through the snapshot children
+                    for (dataSnapshot in snapshot.children) {
+                        // If the value of the snapshot is equal to the contact user's UID
+                        if (dataSnapshot.value == contactUser.uid) {
+                            // Delete the snapshot
                             dataSnapshot.ref.removeValue()
                         }
                     }
                 }
+
                 override fun onCancelled(error: DatabaseError) {
+                    // Handle error
                 }
             })
 
+            // Get a reference to the "friends_list" child node for the current user
             val friendsListReference = ref.child("friends_list").child(currentUserUID.toString()).child(contactUser.uid.toString())
+
+            // Get a reference to the "friends_list" child node for the contact user
             val requesterListReference = ref.child("friends_list").child(contactUser.uid.toString()).child(currentUserUID.toString())
+
+            // Set the contact user as a child of the current user's "friends_list" node
             friendsListReference.setValue(contactUser!!)
+
+            // Add a listener for a single value event to retrieve the current user's data
             mDbRef.child("user").child(currentUserUID.toString()).addListenerForSingleValueEvent(object :
-                ValueEventListener{
+                ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    // If the snapshot exists
                     if (snapshot.exists()) {
+                        // Get the current user's data as a User object
                         val currentUser = snapshot.getValue(User::class.java)
+
+                        // Set the current user as a child of the contact user's "friends_list" node
                         requesterListReference.setValue(currentUser!!)
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    // Handle error
                 }
-                })
-
-
+            })
         }
 
         holder.declineButton.setOnClickListener(){
