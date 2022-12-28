@@ -31,34 +31,45 @@
 
         <ImageView
             android:id="@+id/cameraIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
             android:paddingTop="5dp"
-            android:src="@drawable/cameraicon"
+            android:layout_weight="8"
+            android:src="@drawable/cameraicon"></ImageView>
 
-            ></ImageView>
+        <ImageView
+            android:id="@+id/galleryIcon"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="3dp"
+            android:paddingTop="6dp"
+            android:layout_weight="8"
+            android:src="@drawable/galleryicon"></ImageView>
 
         <EditText
             android:id="@+id/messageBox"
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_weight="80"
+            android:layout_weight="74"
             android:hint="Type a message"
             android:layout_gravity="bottom"
             android:paddingLeft="10dp"
             android:paddingRight="5dp"
-            android:layout_marginBottom="1dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:inputType="textAutoCorrect"
             android:background="@drawable/message_box_background"></EditText>
 
         <ImageView
             android:id="@+id/sentButton"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:src="@drawable/sendbtnremovebg2"
-            android:layout_weight="20"
-            android:layout_marginBottom="-4dp"></ImageView>
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="10"
+            android:src="@drawable/sendbutton"
+            android:layout_marginTop="2dp"></ImageView>
 
     </LinearLayout>
 

@@ -28,6 +28,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageBox: EditText
     private lateinit var sendButton: ImageView
     private lateinit var cameraButton: ImageView
+    private lateinit var galleryIcon: ImageView
     private lateinit var toolbarContent: TextView
     private lateinit var toolbarImageContent: ImageView
     private lateinit var messageAdapter: messageAdapter
@@ -60,6 +61,8 @@ class ChatActivity : AppCompatActivity() {
         messageBox = findViewById(R.id.messageBox)
         sendButton = findViewById(R.id.sentButton)
         cameraButton = findViewById(R.id.cameraIcon)
+        galleryIcon = findViewById(R.id.galleryIcon)
+
         messageList = ArrayList()
         messageAdapter = messageAdapter(this, messageList)
 
@@ -102,7 +105,11 @@ class ChatActivity : AppCompatActivity() {
             openCameraIntent()
         }
 
-
+        galleryIcon.setOnClickListener(){
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 1)
+        }
 
         sendButton.setOnClickListener(){
             val message = messageBox.text.toString()
@@ -158,18 +165,23 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    var cameraPhotoURI: Uri? = null
+    var cameraURI: Uri? = null
+    var selectedPhotoUri: Uri? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0 && resultCode == RESULT_OK) {
-            cameraPhotoURI = imageLocationUri
-            Toast.makeText(this@ChatActivity, cameraPhotoURI.toString(), Toast.LENGTH_SHORT).show()
-            uploadImageToFirebaseStorage()
+            cameraURI = imageLocationUri
+            Toast.makeText(this@ChatActivity, cameraURI.toString(), Toast.LENGTH_SHORT).show()
+            uploadImageToFirebaseStorage(cameraURI)
+        }
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null){
+            selectedPhotoUri = data.data
+            uploadImageToFirebaseStorage(selectedPhotoUri)
         }
     }
 
-    private fun uploadImageToFirebaseStorage(){
+    private fun uploadImageToFirebaseStorage(cameraPhotoURI: Uri?){
         if (cameraPhotoURI == null)return
         val format = SimpleDateFormat("HH:mm")
         val time = format.format(Date())

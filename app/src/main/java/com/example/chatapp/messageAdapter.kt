@@ -48,7 +48,7 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
                 holder.sentMessage.visibility = View.VISIBLE
             } else {
                 holder.sentImage.visibility = View.VISIBLE
-                Glide.with(context).load(currentMessage.message).override(200, holder.sentImage.maxHeight).into(holder.sentImage)
+                Glide.with(context).load(currentMessage.message).override(200, holder.sentImage.maxHeight).fitCenter().into(holder.sentImage)
                 holder.sentMessage.visibility = View.GONE
                 holder.sentTime.text = currentMessage.time
             }
@@ -62,7 +62,7 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
                 holder.receiveMessage.visibility = View.VISIBLE
             } else {
                 holder.receiveImage.visibility = View.VISIBLE
-                Glide.with(context).load(currentMessage.message).override(holder.receiveImage.width, holder.receiveImage.height).fitCenter().into(holder.receiveImage)
+                Glide.with(context).load(currentMessage.message).override(200, holder.receiveImage.height).fitCenter().into(holder.receiveImage)
                 holder.receiveMessage.visibility = View.GONE
                 holder.receiveTime.text = currentMessage.time
             }
