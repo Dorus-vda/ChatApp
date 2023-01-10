@@ -14,12 +14,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
+import com.google.android.datatransport.cct.internal.AndroidClientInfo.builder
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.components.Component.builder
 import com.google.firebase.database.*
+import com.google.firebase.encoders.FieldDescriptor.builder
+import com.google.firebase.installations.remote.TokenResult.builder
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
 import java.util.*
+import android.os.Build
+import com.google.android.gms.tasks.OnCompleteListener
 
 
 class ChatActivity : AppCompatActivity() {
@@ -32,7 +39,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var toolbarContent: TextView
     private lateinit var toolbarImageContent: ImageView
     private lateinit var messageAdapter: messageAdapter
-    private lateinit var messageList: ArrayList<Message>
+    private lateinit var messageList: ArrayList<MessageType>
 
     var receiverRoom: String? = null
     var senderRoom: String? = null
@@ -86,7 +93,7 @@ class ChatActivity : AppCompatActivity() {
                         messageList.clear()
 
                         for(postSnapshot in snapshot.children){
-                            val message = postSnapshot.getValue(Message::class.java)
+                            val message = postSnapshot.getValue(MessageType::class.java)
                             messageList.add(message!!)
                         }
                         messageAdapter.notifyDataSetChanged()
@@ -106,9 +113,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         galleryIcon.setOnClickListener(){
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 1)
+            openGalleryIntent()
         }
 
         sendButton.setOnClickListener(){
@@ -116,9 +121,10 @@ class ChatActivity : AppCompatActivity() {
             val format = SimpleDateFormat("HH:mm")
             val time = format.format(Date())
             val type = "text"
+            var token : String? = null
 
-            val messageObject = Message(message, senderUid, receiverUid, time, type)
-            val sentMessageObject = Message("You: " + message, senderUid, receiverUid, time, type)
+            val messageObject = MessageType(message, senderUid, receiverUid, time, type)
+            val sentMessageObject = MessageType("You: " + message, senderUid, receiverUid, time, type)
 
             val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid")
             latestMessageRef.setValue(sentMessageObject)
@@ -133,8 +139,28 @@ class ChatActivity : AppCompatActivity() {
                             .setValue(messageObject)
                         chatRecyclerView.smoothScrollToPosition(messageAdapter.itemCount -1)
                     }
+
+
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.w("TAG", "Fetching FCM registration token failed", task.exception)
+                        return@OnCompleteListener
+                    }
+
+                    // Get new FCM registration token
+                    token = task.result
+
+                })
+
+                val message = RemoteMessage.Builder(mDbRef.child("user").child(receiverUid.toString()).child("token").get().toString())
+                    .addData("message", "Gelukkig Nieuwjaar" )
+                    .build()
+
+                FirebaseMessaging.getInstance().send(message)
             }
             messageBox.setText("")
+
+
         }
 
         chatRecyclerView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
@@ -151,6 +177,12 @@ class ChatActivity : AppCompatActivity() {
 
 
     var imageLocationUri: Uri? = null
+
+    private fun openGalleryIntent(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 1)
+    }
 
     private fun openCameraIntent(){
         val values = ContentValues()
@@ -196,7 +228,7 @@ class ChatActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Log.d("MainActivity", "Photo is uploaded ${it.metadata?.path}")
                 ref.downloadUrl.addOnSuccessListener {
-                    val messageObject = Message(it.toString(), FirebaseAuth.getInstance().currentUser?.uid, receiverUid, time, type)
+                    val messageObject = MessageType(it.toString(), FirebaseAuth.getInstance().currentUser?.uid, receiverUid, time, type)
                     senderRef.push()
                         .setValue(messageObject).addOnSuccessListener {
                             receiverRef.push()

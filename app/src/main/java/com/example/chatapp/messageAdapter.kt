@@ -2,20 +2,16 @@ package com.example.chatapp
 
 import android.content.Context
 import android.content.Intent
-import android.media.Image
-import android.provider.Telephony
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 
-class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
+class messageAdapter(val context: Context, val messageList: ArrayList<MessageType>):
 
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -48,7 +44,7 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
                 holder.sentMessage.visibility = View.VISIBLE
             } else {
                 holder.sentImage.visibility = View.VISIBLE
-                Glide.with(context).load(currentMessage.message).override(200, holder.sentImage.maxHeight).fitCenter().into(holder.sentImage)
+                Glide.with(context).load(currentMessage.message).override(200, 250).centerCrop().into(holder.sentImage)
                 holder.sentMessage.visibility = View.GONE
                 holder.sentTime.text = currentMessage.time
             }
@@ -62,7 +58,7 @@ class messageAdapter(val context: Context, val messageList: ArrayList<Message>):
                 holder.receiveMessage.visibility = View.VISIBLE
             } else {
                 holder.receiveImage.visibility = View.VISIBLE
-                Glide.with(context).load(currentMessage.message).override(200, holder.receiveImage.height).fitCenter().into(holder.receiveImage)
+                Glide.with(context).load(currentMessage.message).override(200, 250).centerCrop().into(holder.receiveImage)
                 holder.receiveMessage.visibility = View.GONE
                 holder.receiveTime.text = currentMessage.time
             }

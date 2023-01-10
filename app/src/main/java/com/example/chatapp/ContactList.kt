@@ -64,21 +64,11 @@ class ContactList : AppCompatActivity() {
                                 adapter.notifyDataSetChanged()
                             }
                         }
-                        override fun onCancelled(error: DatabaseError){
-
-                        }
+                        override fun onCancelled(error: DatabaseError){}
                     })
-
-
                 }
-
-
             }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
+            override fun onCancelled(error: DatabaseError) {}
         })
 
         btnAdd.setOnClickListener {
@@ -89,8 +79,6 @@ class ContactList : AppCompatActivity() {
             }else{
                 sendFriendRequest(email);
             }
-
-
         }
     }
 
@@ -111,7 +99,6 @@ class ContactList : AppCompatActivity() {
             query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Check if there is a user with the given email address
-
                     if (dataSnapshot.exists()) {
                         // User exists, so we can send the friend request
                         val recipientUserId = dataSnapshot.children.first().getValue(User::class.java)?.uid
@@ -135,33 +122,23 @@ class ContactList : AppCompatActivity() {
                                         // Failed to send friend request
                                     }
                             }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                // Failed to retrieve friend request data
-                            }
+                            override fun onCancelled(error: DatabaseError) {}
                         })
 
                         // Check the flag before sending a new friend request
                     } else {
-                        Toast.makeText(this@ContactList, "User doesn't exist", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this@ContactList, "User doesn't exist", Toast.LENGTH_SHORT).show()
                         // Recipient user does
                     }
                 }
-
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        // Failed to retrieve recipient user data
-                    }
+                    override fun onCancelled(databaseError: DatabaseError) {}
                 })
             }
         }
-
                 override fun onBackPressed() {
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
         }
-
     }
 
 

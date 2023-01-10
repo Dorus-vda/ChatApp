@@ -5,33 +5,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-import com.google.firebase.analytics.FirebaseAnalytics
+import com.bumptech.glide.GlideBuilder
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.messaging.Constants
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
-import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.toolbar.*
-import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -65,30 +55,20 @@ class MainActivity : AppCompatActivity() {
 
         preferences = getSharedPreferences("SHARED_PREF", Context.MODE_PRIVATE)
 
-
         mDbRef.child("friends_list").child(mAuth.uid.toString()).addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
                 userList.clear()
-                for(postSnapshot in snapshot.children){
-
+                for(postSnapshot in snapshot.children) {
                     val currentUser = postSnapshot.getValue(User::class.java)
 
-
-                    if(mAuth.currentUser?.uid != currentUser?.uid){
+                    if (mAuth.currentUser?.uid != currentUser?.uid) {
                         userList.add(currentUser!!)
-
+                        adapter.notifyItemChanged(adapter.itemCount)
                     }
-
                 }
-                adapter.notifyDataSetChanged()
 
             }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
+            override fun onCancelled(error: DatabaseError) {}
         })
 
         mDbRef.child("user").child(FirebaseAuth.getInstance().uid.toString()).child("profileImageURL").addValueEventListener(object: ValueEventListener {
@@ -97,12 +77,8 @@ class MainActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
 
-            override fun onCancelled(error: DatabaseError) {
-
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
-
-
 
         logoutButton.setOnClickListener(){
             showPopup(logoutButton)
@@ -128,16 +104,12 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             if(item.itemId == R.id.profilepic){
-                Log.d("MainActivity", "Profilepic has been picked")
-
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
                 startActivityForResult(intent, 0)
             }
                 true
             if(item.itemId == R.id.addcontact){
-                Log.d("MainActivity", "AddContact has been clicked")
-
                 val intent = Intent(this@MainActivity, ContactList::class.java)
                 finish()
                 startActivity(intent)
@@ -176,10 +148,6 @@ class MainActivity : AppCompatActivity() {
                         }
                 }
             }
-
-
-
-
     }
 
 }

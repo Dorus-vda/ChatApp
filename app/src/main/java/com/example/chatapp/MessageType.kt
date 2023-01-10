@@ -1,9 +1,9 @@
 package com.example.chatapp
 
 import android.util.Log
-import java.text.SimpleDateFormat
 
-class Message {
+//constructs a message object with the following variables
+class MessageType {
     var message: String? = null
     var senderId: String? = null
     var receiverId: String? = null
@@ -14,7 +14,6 @@ class Message {
 
     constructor(message: String?, senderId: String?, receiverId: String?, time: String?, type: String?){
         this.message = message
-        Log.d("TAG", message.toString())
         this.senderId = senderId
         this.receiverId = receiverId
         this.time = time

@@ -13,6 +13,7 @@ class PhotoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycle.addObserver(ApplicationObserver())
         setContentView(R.layout.activity_photo)
         val imageURL = intent.getStringExtra("imageURL")
         Glide.with(this@PhotoActivity).load(imageURL).fitCenter().into(findViewById(R.id.photoHolder))

@@ -33,7 +33,7 @@
             android:id="@+id/cameraIcon"
             android:layout_width="30dp"
             android:layout_height="40dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="6dp"
             android:paddingTop="5dp"
             android:layout_weight="8"
             android:src="@drawable/cameraicon"></ImageView>
@@ -42,9 +42,10 @@
             android:id="@+id/galleryIcon"
             android:layout_width="30dp"
             android:layout_height="40dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:layout_marginLeft="3dp"
-            android:paddingTop="6dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="1dp"
             android:layout_weight="8"
             android:src="@drawable/galleryicon"></ImageView>
 
@@ -59,7 +60,7 @@
             android:paddingRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:inputType="textAutoCorrect"
+            android:inputType="textCapSentences"
             android:background="@drawable/message_box_background"></EditText>
 
         <ImageView

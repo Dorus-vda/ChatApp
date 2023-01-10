@@ -25,64 +25,57 @@ import java.io.InputStream
 import kotlinx.coroutines.*
 
 
-class UserAdapter(val context: Context, val userList: ArrayList<User>):
-    RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(val context: Context, val userList: ArrayList<User>): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.user_layout, parent,false)
+        val view = LayoutInflater.from(context).inflate(R.layout.user_layout, parent, false)
         return UserViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val currentUser = userList[position]
         holder.textName.text = currentUser.name
-        holder.profileLetter.text = currentUser.name.toString().take(1).capitalize() // Set profile letter to first letter of username, capitalized
+        holder.profileLetter.text = currentUser.name.toString().take(1).capitalize()
+
         val senderUid = FirebaseAuth.getInstance().uid
         val receiverUid = currentUser.uid
-        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid") // Database reference to latest messages from the contacts of current user
-        ref.child("message").addValueEventListener(object : ValueEventListener { // Get latest message from certain user from database
+
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$senderUid/$receiverUid")
+        ref.child("message").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value.toString() != "null"){ // check if there is a last message
-                    holder.messagecontent.text = snapshot.value.toString() // Set latest_message_text to latest message retrieved from database
-                } else { // else leave field empty
-                    holder.messagecontent.text = ""
-                }
+                holder.messagecontent.text = snapshot.value?.toString() ?: ""
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-        val ref2 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid") // Database reference to online status of sender
+
+        val ref2 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid")
         ref2.child("online").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value.toString() != "True"){ // check if person is not online
-                    if (ref2.child("online").key != "True")
-                        holder.onlineled.visibility = View.INVISIBLE // set online icon to invisible
-                } else { // else show online icon
-                    holder.onlineled.visibility = View.VISIBLE // set online icon to visible
-                }
+                holder.onlineled.visibility = if (snapshot.value.toString() == "True") View.VISIBLE else View.INVISIBLE
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+
         val ref3 = FirebaseDatabase.getInstance().getReference("/user/$receiverUid")
         ref3.child("profileImageURL").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value != null){
+                snapshot.value?.let {
                     holder.profileLetter.visibility = View.INVISIBLE
-                    Glide.with(context).load(snapshot.value.toString()).override(100,100).centerCrop().into(holder.profilePicture)
-                    Log.d("UserAdapter", snapshot.value.toString())
+                    Glide.with(context).load(it.toString()).override(100, 100).centerCrop().into(holder.profilePicture)
                 }
             }
+
             override fun onCancelled(databaseError: DatabaseError) {}
         })
 
-        holder.itemView.setOnClickListener{
-            val intent = Intent(context,ChatActivity::class.java)
-
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra("name", currentUser.name)
             intent.putExtra("uid", currentUser.uid)
-
             context.startActivities(arrayOf(intent))
         }
-
     }
 
     override fun getItemCount(): Int {
