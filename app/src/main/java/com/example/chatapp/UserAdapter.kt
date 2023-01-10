@@ -2,8 +2,6 @@ package com.example.chatapp
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,17 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.Glide.with
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.squareup.picasso.Picasso
-import java.io.InputStream
-import kotlinx.coroutines.*
 
 
 class UserAdapter(val context: Context, val userList: ArrayList<User>): RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -77,6 +69,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>): Recycler
             context.startActivities(arrayOf(intent))
         }
     }
+
 
     override fun getItemCount(): Int {
         return userList.size

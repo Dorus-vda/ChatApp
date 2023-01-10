@@ -12,7 +12,8 @@
 
     <EditText
         android:id="@+id/edt_email"
-        android:layout_width="270dp"
+        android:layout_width="match_parent"
+        android:layout_toLeftOf="@id/btn_add"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/contactToolbar"
@@ -27,9 +28,9 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_add"
         android:layout_width="100dp"
-        android:layout_alignParentRight="true"
         android:layout_height="40dp"
         android:layout_below="@id/contactToolbar"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="20dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/btn_background"
