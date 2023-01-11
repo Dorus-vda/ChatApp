@@ -61,12 +61,13 @@ class ContactList : AppCompatActivity() {
                             if (snapshot.exists()){
                                 val currentContact = snapshot.getValue(User::class.java)
                                 userList.add(currentContact!!)
-                                adapter.notifyDataSetChanged()
+                                adapter.notifyItemChanged(adapter.itemCount)
                             }
                         }
                         override fun onCancelled(error: DatabaseError){}
                     })
                 }
+                adapter.notifyItemChanged(adapter.itemCount)
             }
             override fun onCancelled(error: DatabaseError) {}
         })

@@ -1,5 +1,7 @@
 package com.example.chatapp
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -31,11 +33,13 @@ class contactAdapter(val context: Context, val userList: ArrayList<User>):
         val contactUser = userList[position]
         holder.contactName.text = contactUser.name
         val contactPictureRef = mDbRef.child("user").child(contactUser.uid.toString())
-        contactPictureRef.child("profileImageURL").addValueEventListener(object : ValueEventListener {
+            contactPictureRef.child("profileImageURL").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.value != null){
-                    Glide.with(context).load(snapshot.value.toString()).override(100,100).centerCrop().into(holder.contactPicture)
-                    Log.d("UserAdapter", snapshot.value.toString())
+                    if(context.isDoomed() != true) {
+                        Glide.with(context).load(snapshot.value.toString()).override(100, 100)
+                            .centerCrop().into(holder.contactPicture)
+                    }
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -127,6 +131,13 @@ class contactAdapter(val context: Context, val userList: ArrayList<User>):
         val declineButton = itemView.findViewById<AppCompatButton>(R.id.btn_decline)
         val contactName = itemView.findViewById<TextView>(R.id.contact_name)
         val contactPicture = itemView.findViewById<ImageView>(R.id.contact_Picture)
+    }
+
+    fun Context?.isDoomed(): Boolean = when (this) {
+        null -> true
+        is Application -> false
+        is Activity -> (this.isDestroyed or this.isFinishing)
+        else -> false
     }
 
 }
